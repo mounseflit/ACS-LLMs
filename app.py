@@ -10,17 +10,41 @@ from langchain_ibm.chat_models import convert_to_openai_tool
 
 st.set_page_config(page_title="QA Chatbot", layout="wide")
 
-
 st.title("QA Chatbot with ACS LLMs 🤖")
-
 
 # Sidebar for credentials and settings
 with st.sidebar:
     st.header("🔧 Settings")
     
+    # Try to get credentials from secrets first, otherwise use input fields
     api_key = st.text_input("API Key *", type="password")
-    project_id = st.text_input("Project ID *")
-    model_options = {
+    project_id = st.secrets.get("project_id", "") or st.text_input("Project ID *")
+    project_type = st.selectbox("Project Type", options=["Text", "Code", "Vision"])
+  
+    model_vision_options = {
+        "Google": [
+            "google/flan-t5-xl"
+        ],
+        "IBM Granite": [
+            "ibm/granite-vision-3-2-2b"
+        ],
+        "Meta (LLaMA)": [
+            "meta-llama/llama-3-2-11b-vision-instruct",
+            "meta-llama/llama-3-2-90b-vision-instruct",
+            "meta-llama/llama-guard-3-11b-vision"
+        ],
+        "Mistral": [
+            "mistralai/pixtral-12b"
+        ]
+    }
+
+    model_code_options = {
+        "IBM Granite": [
+            "ibm/granite-8b-code-instruct"
+        ]
+    }
+
+    model_text_options = {
         "Google": [
             "google/flan-t5-xl"
         ],
@@ -30,35 +54,38 @@ with st.sidebar:
             "ibm/granite-3-2b-instruct",
             "ibm/granite-3-3-8b-instruct",
             "ibm/granite-3-8b-instruct",
-            "ibm/granite-8b-code-instruct",
             "ibm/granite-guardian-3-2b",
-            "ibm/granite-guardian-3-8b",
-            "ibm/granite-vision-3-2-2b"
+            "ibm/granite-guardian-3-8b"
         ],
         "Meta (LLaMA)": [
             "meta-llama/llama-2-13b-chat",
-            "meta-llama/llama-3-2-11b-vision-instruct",
             "meta-llama/llama-3-2-1b-instruct",
             "meta-llama/llama-3-2-3b-instruct",
-            "meta-llama/llama-3-2-90b-vision-instruct",
             "meta-llama/llama-3-3-70b-instruct",
             "meta-llama/llama-3-405b-instruct",
-            "meta-llama/llama-4-maverick-17b-128e-instruct-fp8",
-            "meta-llama/llama-guard-3-11b-vision"
+            "meta-llama/llama-4-maverick-17b-128e-instruct-fp8"
         ],
         "Mistral": [
             "mistralai/mistral-large",
             "mistralai/mistral-medium-2505",
-            "mistralai/mistral-small-3-1-24b-instruct-2503",
-            "mistralai/pixtral-12b"
+            "mistralai/mistral-small-3-1-24b-instruct",
+            "mistralai/mistral-small-3-1-24b-instruct-2503"
         ]
     }
-    
-    # Create a two-level selectbox for model selection
-    model_provider = st.selectbox("Model Provider", options=list(model_options.keys()))
-    model_id = st.selectbox("Model ID *", options=model_options[model_provider])
 
-    url = st.text_input("Endpoint URL *")
+    # Select appropriate model options based on project type
+    if project_type == "Vision":
+        current_options = model_vision_options
+    elif project_type == "Code":
+        current_options = model_code_options
+    else:  # Text
+        current_options = model_text_options
+
+    # Create a two-level selectbox for model selection
+    model_provider = st.selectbox("Model Provider", options=list(current_options.keys()))
+    model_id = st.selectbox("Model ID *", options=current_options.get(model_provider, []))
+
+    url = st.secrets.get("url", "") or st.text_input("Endpoint URL *")
 
     proxy_ip = st.text_input("Proxy IP (optional)")
     proxy_port = st.text_input("Proxy Port (optional)")
@@ -85,7 +112,6 @@ if user_input:
     with st.chat_message("user"):
         st.markdown(user_input)
 
-    
     # Proxy setup if provided
     if proxy_ip and proxy_port:
         proxy = f"http://{proxy_ip}:{proxy_port}"
@@ -125,4 +151,3 @@ if user_input:
 
     except Exception as e:
         st.error(f"Error: {str(e)}")
-
