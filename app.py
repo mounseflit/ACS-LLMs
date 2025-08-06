@@ -87,8 +87,8 @@ with st.sidebar:
 
     url = st.secrets.get("url", "") or st.text_input("Endpoint URL *")
 
-    proxy_ip = st.text_input("Proxy IP (optional)")
-    proxy_port = st.text_input("Proxy Port (optional)")
+    # proxy_ip = st.text_input("Proxy IP (optional)")
+    # proxy_port = st.text_input("Proxy Port (optional)")
 
 # Initialize chat history
 if "chat_history" not in st.session_state:
@@ -113,10 +113,10 @@ if user_input:
         st.markdown(user_input)
 
     # Proxy setup if provided
-    if proxy_ip and proxy_port:
-        proxy = f"http://{proxy_ip}:{proxy_port}"
-        os.environ["HTTP_PROXY"] = proxy
-        os.environ["HTTPS_PROXY"] = proxy
+    # if proxy_ip and proxy_port:
+    #     proxy = f"http://{proxy_ip}:{proxy_port}"
+    #     os.environ["HTTP_PROXY"] = proxy
+    #     os.environ["HTTPS_PROXY"] = proxy
 
     try:
         credentials = Credentials(url=url, api_key=api_key)
