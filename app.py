@@ -85,6 +85,7 @@ if user_input:
     with st.chat_message("user"):
         st.markdown(user_input)
 
+    
     # Proxy setup if provided
     if proxy_ip and proxy_port:
         proxy = f"http://{proxy_ip}:{proxy_port}"
@@ -124,3 +125,4 @@ if user_input:
 
     except Exception as e:
         st.error(f"Error: {str(e)}")
+
