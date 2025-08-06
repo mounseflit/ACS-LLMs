@@ -19,7 +19,7 @@ with st.sidebar:
     # Try to get credentials from secrets first, otherwise use input fields
     api_key = st.text_input("API Key *", type="password")
     project_id = st.secrets.get("project_id", "") or st.text_input("Project ID *")
-    project_type = st.selectbox("Project Type", options=["Text", "Code", "Vision"])
+    project_type = st.selectbox("Project Type", options=["Text", "Code", "Vision", "Other"])
   
     model_vision_options = {
         "Google": [
@@ -45,20 +45,13 @@ with st.sidebar:
     }
 
     model_text_options = {
-        "Google": [
-            "google/flan-t5-xl"
-        ],
         "IBM Granite": [
-            "ibm/granite-13b-instruct-v2",
             "ibm/granite-3-2-8b-instruct",
             "ibm/granite-3-2b-instruct",
             "ibm/granite-3-3-8b-instruct",
             "ibm/granite-3-8b-instruct",
-            "ibm/granite-guardian-3-2b",
-            "ibm/granite-guardian-3-8b"
         ],
         "Meta (LLaMA)": [
-            "meta-llama/llama-2-13b-chat",
             "meta-llama/llama-3-2-1b-instruct",
             "meta-llama/llama-3-2-3b-instruct",
             "meta-llama/llama-3-3-70b-instruct",
@@ -68,9 +61,21 @@ with st.sidebar:
         "Mistral": [
             "mistralai/mistral-large",
             "mistralai/mistral-medium-2505",
-            "mistralai/mistral-small-3-1-24b-instruct",
             "mistralai/mistral-small-3-1-24b-instruct-2503"
         ]
+    }
+
+    model_other_options = {
+
+        "IBM Granite": [
+            "ibm/granite-13b-instruct-v2",
+            "ibm/granite-guardian-3-2b",
+            "ibm/granite-guardian-3-8b"
+        ],
+        "Meta (LLaMA)": [
+            "meta-llama/llama-2-13b-chat",
+        ]
+
     }
 
     # Select appropriate model options based on project type
@@ -78,6 +83,8 @@ with st.sidebar:
         current_options = model_vision_options
     elif project_type == "Code":
         current_options = model_code_options
+    elif project_type == "Other":
+        current_options = model_other_options
     else:  # Text
         current_options = model_text_options
 
@@ -151,3 +158,4 @@ if user_input:
 
     except Exception as e:
         st.error(f"Error: {str(e)}")
+
