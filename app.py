@@ -10,7 +10,9 @@ from langchain_ibm.chat_models import convert_to_openai_tool
 
 st.set_page_config(page_title="QA Chatbot", layout="wide")
 
-st.title("QA Chatbot with Ai")
+
+st.title("QA Chatbot with ACS LLMs 🤖")
+
 
 # Sidebar for credentials and settings
 with st.sidebar:
@@ -18,7 +20,44 @@ with st.sidebar:
     
     api_key = st.text_input("API Key *", type="password")
     project_id = st.text_input("Project ID *")
-    model_id = st.text_input("Model ID *")
+    model_options = {
+        "Google": [
+            "google/flan-t5-xl"
+        ],
+        "IBM Granite": [
+            "ibm/granite-13b-instruct-v2",
+            "ibm/granite-3-2-8b-instruct",
+            "ibm/granite-3-2b-instruct",
+            "ibm/granite-3-3-8b-instruct",
+            "ibm/granite-3-8b-instruct",
+            "ibm/granite-8b-code-instruct",
+            "ibm/granite-guardian-3-2b",
+            "ibm/granite-guardian-3-8b",
+            "ibm/granite-vision-3-2-2b"
+        ],
+        "Meta (LLaMA)": [
+            "meta-llama/llama-2-13b-chat",
+            "meta-llama/llama-3-2-11b-vision-instruct",
+            "meta-llama/llama-3-2-1b-instruct",
+            "meta-llama/llama-3-2-3b-instruct",
+            "meta-llama/llama-3-2-90b-vision-instruct",
+            "meta-llama/llama-3-3-70b-instruct",
+            "meta-llama/llama-3-405b-instruct",
+            "meta-llama/llama-4-maverick-17b-128e-instruct-fp8",
+            "meta-llama/llama-guard-3-11b-vision"
+        ],
+        "Mistral": [
+            "mistralai/mistral-large",
+            "mistralai/mistral-medium-2505",
+            "mistralai/mistral-small-3-1-24b-instruct-2503",
+            "mistralai/pixtral-12b"
+        ]
+    }
+    
+    # Create a two-level selectbox for model selection
+    model_provider = st.selectbox("Model Provider", options=list(model_options.keys()))
+    model_id = st.selectbox("Model ID *", options=model_options[model_provider])
+
     url = st.text_input("Endpoint URL *")
 
     proxy_ip = st.text_input("Proxy IP (optional)")
