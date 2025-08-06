@@ -1,0 +1,3 @@
+Streamlit
+ibm-watsonx-ai
+langchain-ibm
