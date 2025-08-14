@@ -1,27 +1,3 @@
-"""
-QA Chatbot with support for IBM watsonx multimodal (vision) models.
-
-This Streamlit application builds upon a basic LLM chat interface by adding the
-capability to query IBM's vision-enabled foundation models. When the user
-selects a vision model from the sidebar, the UI exposes additional inputs to
-upload an image or provide a remote image URL. The image is base64 encoded
-client‑side and sent to the watsonx.ai chat API alongside the user's text
-prompt in the format expected by multimodal models. For text, code and
-other model types the behaviour remains unchanged from the original version.
-
-Key features:
-    • Project type selection (Text, Code, Vision, Other) determines available
-      models.
-    • Optional image input for vision projects via file upload or remote URL.
-    • Conversation history persists across turns, including vision messages.
-    • Automatic timing and token speed reporting for each response.
-
-Note: This script assumes that valid IBM watsonx credentials (API key and
-project ID) are provided either via Streamlit secrets or the sidebar. See
-IBM's documentation for more details on supported models and message formats
-for vision models【631615383172120†L315-L343】.
-"""
-
 import base64
 import os
 import time
@@ -206,8 +182,8 @@ def main() -> None:
                 )
 
     # Initialize chat history in session state
-    if "chat_history" not in st.session_state:
-        st.session_state.chat_history: List[Dict[str, Any]] = []
+        if "chat_history" not in st.session_state:
+            st.session_state.chat_history = []
 
     # Display past messages
     for message in st.session_state.chat_history:
@@ -241,7 +217,7 @@ def main() -> None:
         # Build the current user message payload depending on project type
         current_content: Union[str, List[Dict[str, Any]]]
         vision_image_entry: Optional[Dict[str, Any]] = None
-        # Encode uploaded image if provided
+        # Only one image is sent: uploaded image takes priority, else remote URL
         if project_type == "Vision":
             if uploaded_image:
                 image_info = encode_image_to_base64(uploaded_image)
@@ -251,11 +227,11 @@ def main() -> None:
                         "image_url": {"url": image_info["data_uri"]},
                     }
             elif remote_image_url:
-                # Use the remote URL directly; the API will fetch it
-                vision_image_entry = {
-                    "type": "image_url",
-                    "image_url": {"url": remote_image_url},
-                }
+                if remote_image_url.strip():
+                    vision_image_entry = {
+                        "type": "image_url",
+                        "image_url": {"url": remote_image_url},
+                    }
 
         # Construct content for the current user message
         if vision_image_entry:
