@@ -104,20 +104,23 @@ def main() -> None:
         )
         project_type = st.selectbox("Project Type", options=["Text", "Code", "Vision", "Other"])
 
+        
         # Define available model options per project type
         model_vision_options: Dict[str, List[str]] = {
-            "Google": ["google/flan-t5-xl"],
+            
             "IBM Granite": ["ibm/granite-vision-3-2-2b"],
             "Meta (LLaMA)": [
                 "meta-llama/llama-3-2-11b-vision-instruct",
                 "meta-llama/llama-3-2-90b-vision-instruct",
-                "meta-llama/llama-guard-3-11b-vision",
             ],
-            "Mistral": ["mistralai/pixtral-12b","mistralai/mistral-small-3-1-24b-instruct-2503",
-                "mistralai/mistral-medium-2505"]
+            "Mistral": [
+                "mistralai/pixtral-12b",
+                "mistralai/mistral-small-3-1-24b-instruct-2503", 
+                "mistralai/mistral-medium-2505"
+            ]
         }
         model_code_options: Dict[str, List[str]] = {
-            "IBM Granite": ["ibm/granite-8b-code-instruct"],
+            "IBM Granite": ["ibm/granite-8b-code-instruct"]
         }
         model_text_options: Dict[str, List[str]] = {
             "IBM Granite": [
@@ -140,12 +143,16 @@ def main() -> None:
             ],
         }
         model_other_options: Dict[str, List[str]] = {
+            "Google": ["google/flan-t5-xl"],
             "IBM Granite": [
                 "ibm/granite-13b-instruct-v2",
                 "ibm/granite-guardian-3-2b",
                 "ibm/granite-guardian-3-8b",
             ],
-            "Meta (LLaMA)": ["meta-llama/llama-2-13b-chat"],
+            "Meta (LLaMA)": [
+                "meta-llama/llama-2-13b-chat",
+                "meta-llama/llama-guard-3-11b-vision"
+            ]
         }
 
         # Choose the appropriate option set based on project type
