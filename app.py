@@ -113,7 +113,7 @@ def main() -> None:
                 "meta-llama/llama-3-2-90b-vision-instruct",
                 "meta-llama/llama-guard-3-11b-vision",
             ],
-            "Mistral": ["mistralai/pixtral-12b"],
+            "Mistral": ["mistralai/pixtral-12b","mistralai/mistral-small-3-1-24b-instruct-2503"],
         }
         model_code_options: Dict[str, List[str]] = {
             "IBM Granite": ["ibm/granite-8b-code-instruct"],
