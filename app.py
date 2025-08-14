@@ -234,11 +234,11 @@ def main() -> None:
                     }
 
         # Construct content for the current user message
-        if vision_image_entry:
-            # Multimodal message: include text and image
+        if project_type == "Vision" and vision_image_entry:
+            # Only one image entry allowed: include text and one image
             current_content = [
                 {"type": "text", "text": user_input},
-                vision_image_entry,
+                vision_image_entry
             ]
         else:
             # Purely textual message
