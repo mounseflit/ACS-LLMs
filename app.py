@@ -180,12 +180,7 @@ def main() -> None:
                     type=["png", "jpg", "jpeg"],
                     key="vision_upload",
                 )
-            elif input_method == "URL":
-                remote_image_url = st.text_input(
-                    "Image URL",
-                    placeholder="https://example.com/image.jpg",
-                    key="vision_url",
-                )
+          
 
     # Initialize chat history in session state
         if "chat_history" not in st.session_state:
@@ -199,14 +194,6 @@ def main() -> None:
                 for part in message["content"]:
                     if part.get("type") == "text":
                         st.markdown(part.get("text", ""))
-                    elif part.get("type") == "image_url":
-                        image_url = part.get("image_url", {}).get("url")
-                        if image_url and image_url.startswith("data:image"):
-                            # Convert base64 data URI to bytes for display
-                            _, encoded = image_url.split(",", 1)
-                            st.image(base64.b64decode(encoded), caption="Uploaded image")
-                        elif image_url:
-                            st.image(image_url, caption="Image from URL")
             else:
                 # Simple text content
                 st.markdown(message.get("content", ""))
