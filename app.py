@@ -171,7 +171,7 @@ def main() -> None:
             # Let the user choose to upload a file or provide a URL
             input_method = st.radio(
                 "Select image source",
-                options=["None", "Upload", "URL"],
+                options=["None", "Upload"],
                 horizontal=True,
             )
             if input_method == "Upload":
