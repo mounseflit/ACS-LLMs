@@ -108,16 +108,16 @@ def main() -> None:
         # Define available model options per project type
         model_vision_options: Dict[str, List[str]] = {
             
-            "IBM Granite": ["ibm/granite-vision-3-2-2b"],
-            "Meta (LLaMA)": [
-                "meta-llama/llama-3-2-11b-vision-instruct",
-                "meta-llama/llama-3-2-90b-vision-instruct",
-            ],
             "Mistral": [
                 "mistralai/pixtral-12b",
                 "mistralai/mistral-small-3-1-24b-instruct-2503", 
                 "mistralai/mistral-medium-2505"
-            ]
+            ],
+            "Meta (LLaMA)": [
+                "meta-llama/llama-3-2-11b-vision-instruct",
+                "meta-llama/llama-3-2-90b-vision-instruct",
+            ],
+            "IBM Granite": ["ibm/granite-vision-3-2-2b"]
         }
         model_code_options: Dict[str, List[str]] = {
             "IBM Granite": ["ibm/granite-8b-code-instruct"]
