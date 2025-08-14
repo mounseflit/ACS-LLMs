@@ -1,5 +1,4 @@
 import base64
-import os
 import time
 from typing import Any, Dict, List, Optional, Union
 
@@ -76,7 +75,13 @@ def build_message_history(chat_history: List[Dict[str, Any]]) -> List[Dict[str, 
     messages: List[Dict[str, Any]] = []
     for entry in chat_history:
         if entry.get("role") in {"user", "assistant"}:
-            messages.append({"role": entry["role"], "content": entry["content"]})
+            content = entry["content"]
+            if isinstance(content, list):
+                # For multimodal messages, remove image entries (handled separately)
+                new_content = [part for part in content if part.get("type") != "image_url"]
+                messages.append({"role": entry["role"], "content": new_content})
+            else:
+                messages.append({"role": entry["role"], "content": content})
     return messages
 
 
@@ -197,7 +202,7 @@ def main() -> None:
                         image_url = part.get("image_url", {}).get("url")
                         if image_url and image_url.startswith("data:image"):
                             # Convert base64 data URI to bytes for display
-                            header, encoded = image_url.split(",", 1)
+                            _, encoded = image_url.split(",", 1)
                             st.image(base64.b64decode(encoded), caption="Uploaded image")
                         elif image_url:
                             st.image(image_url, caption="Image from URL")
@@ -275,7 +280,25 @@ def main() -> None:
             )
 
             # Build message history for the API call
-            messages = build_message_history(st.session_state.chat_history)
+            if project_type == "Vision":
+                # Remove all previous images from history, only send latest image
+                messages = build_message_history(st.session_state.chat_history)
+                # If the current user input has an image, add it to the last user message
+                if vision_image_entry:
+                    # Find the last user message and add the image
+                    for i in range(len(messages)-1, -1, -1):
+                        if messages[i]["role"] == "user":
+                            # If the content is a list, append image; else, make it a list
+                            if isinstance(messages[i]["content"], list):
+                                messages[i]["content"].append(vision_image_entry)
+                            else:
+                                messages[i]["content"] = [
+                                    {"type": "text", "text": messages[i]["content"]},
+                                    vision_image_entry
+                                ]
+                            break
+            else:
+                messages = build_message_history(st.session_state.chat_history)
 
             start_time = time.time()
 
