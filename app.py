@@ -267,7 +267,7 @@ def main() -> None:
 
         # Prepare credentials and model
         try:
-            credentials = Credentials(url=url, api_key=api_key, instance_id, username, version = "5.1", verify=False)
+            credentials = Credentials(url=url, api_key=api_key, instance_id=instance_id, username=username, version = "5.1", verify=False)
             # Use TextChatParameters when available for temperature control on text models
             params_obj = TextChatParameters(temperature=1) if TextChatParameters else None
             model = ModelInference(
