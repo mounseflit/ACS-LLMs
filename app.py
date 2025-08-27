@@ -97,10 +97,12 @@ def main() -> None:
 
         # Fetch credentials from secrets or user input
         api_key = st.text_input("API Key *", type="password") or st.secrets.get("api_key", "")
+        instance_id = st.text_input("instance_id *")  or st.secrets.get("instance_id", "")
+        username = st.text_input("username *")  or st.secrets.get("username", "")
+    
         project_id = (
             st.secrets.get("project_id", "")
             or st.text_input("Project ID *")
-            or "8e60491c-6efe-40a5-8544-0f06a13e9405"
         )
         project_type = st.selectbox("Project Type", options=["Text", "Code", "Vision", "Other"])
 
@@ -125,6 +127,7 @@ def main() -> None:
         model_text_options: Dict[str, List[str]] = {
             "IBM Granite": [
                 "ibm/granite-3-2-8b-instruct",
+                "ibm/granite-3-8b-instruct",
                 "ibm/granite-3-2b-instruct",
                 "ibm/granite-3-3-8b-instruct",
                 "ibm/granite-3-8b-instruct",
@@ -168,7 +171,7 @@ def main() -> None:
         model_provider = st.selectbox("Model Provider", options=list(current_options.keys()))
         model_id = st.selectbox("Model ID *", options=current_options.get(model_provider, []))
 
-        url = st.secrets.get("url", "") or st.text_input("Endpoint URL *") or "https://us-south.ml.cloud.ibm.com"
+        url = st.secrets.get("url", "") or st.text_input("Endpoint URL *")
 
         # Additional input fields for vision models
         uploaded_image = None  # type: Optional[Any]
@@ -264,7 +267,7 @@ def main() -> None:
 
         # Prepare credentials and model
         try:
-            credentials = Credentials(url=url, api_key=api_key)
+            credentials = Credentials(url=url, api_key=api_key, instance_id, username, version = "5.1", verify=False)
             # Use TextChatParameters when available for temperature control on text models
             params_obj = TextChatParameters(temperature=1) if TextChatParameters else None
             model = ModelInference(
