@@ -267,7 +267,7 @@ def main() -> None:
 
         # Prepare credentials and model
         try:
-            if !instance_id or !username :
+            if not instance_id or not username :
                 credentials = Credentials(url=url, api_key=api_key)
                 # Use TextChatParameters when available for temperature control on text models
                 params_obj = TextChatParameters(temperature=1) if TextChatParameters else None
