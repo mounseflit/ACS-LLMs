@@ -97,8 +97,8 @@ def main() -> None:
 
         # Fetch credentials from secrets or user input
         api_key = st.text_input("API Key *", type="password") or st.secrets.get("api_key", "")
-        instance_id = st.text_input("instance_id")  or st.secrets.get("instance_id", "")
-        username = st.text_input("username")  or st.secrets.get("username", "")
+        instance_id = st.text_input("instance_id (not required)")  or st.secrets.get("instance_id", "")
+        username = st.text_input("username (not required)")  or st.secrets.get("username", "")
     
         project_id = (
             st.secrets.get("project_id", "")
