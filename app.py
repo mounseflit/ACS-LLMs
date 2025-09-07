@@ -97,8 +97,8 @@ def main() -> None:
 
         # Fetch credentials from secrets or user input
         api_key = st.text_input("API Key *", type="password") or st.secrets.get("api_key", "")
-        instance_id = st.text_input("instance_id *")  or st.secrets.get("instance_id", "")
-        username = st.text_input("username *")  or st.secrets.get("username", "")
+        instance_id = st.text_input("instance_id")  or st.secrets.get("instance_id", "")
+        username = st.text_input("username")  or st.secrets.get("username", "")
     
         project_id = (
             st.secrets.get("project_id", "")
@@ -267,15 +267,26 @@ def main() -> None:
 
         # Prepare credentials and model
         try:
-            credentials = Credentials(url=url, api_key=api_key, instance_id=instance_id, username=username, version = "5.1", verify=False)
-            # Use TextChatParameters when available for temperature control on text models
-            params_obj = TextChatParameters(temperature=1) if TextChatParameters else None
-            model = ModelInference(
-                model_id=model_id,
-                credentials=credentials,
-                project_id=project_id,
-                params=params_obj if project_type != "Vision" else None,
-            )
+            if !instance_id or !username :
+                credentials = Credentials(url=url, api_key=api_key)
+                # Use TextChatParameters when available for temperature control on text models
+                params_obj = TextChatParameters(temperature=1) if TextChatParameters else None
+                model = ModelInference(
+                    model_id=model_id,
+                    credentials=credentials,
+                    project_id=project_id,
+                    params=params_obj if project_type != "Vision" else None,
+                )
+            else :
+                credentials = Credentials(url=url, api_key=api_key, instance_id=instance_id, username=username, version = "5.1", verify=False)
+                # Use TextChatParameters when available for temperature control on text models
+                params_obj = TextChatParameters(temperature=1) if TextChatParameters else None
+                model = ModelInference(
+                    model_id=model_id,
+                    credentials=credentials,
+                    project_id=project_id,
+                    params=params_obj if project_type != "Vision" else None,
+                )
 
             # Build message history for the API call
             if project_type == "Vision":
