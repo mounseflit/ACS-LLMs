@@ -97,13 +97,14 @@ def main() -> None:
 
         # Fetch credentials from secrets or user input
         api_key = st.text_input("API Key *", type="password") or st.secrets.get("api_key", "")
-        instance_id = st.text_input("instance_id (not required)")  or st.secrets.get("instance_id", "")
-        username = st.text_input("username (not required)")  or st.secrets.get("username", "")
     
         project_id = (
             st.secrets.get("project_id", "")
             or st.text_input("Project ID *")
         )
+
+        url = st.secrets.get("url", "") or st.text_input("Endpoint URL *")
+        
         project_type = st.selectbox("Project Type", options=["Text", "Code", "Vision", "Other"])
 
         
@@ -171,7 +172,10 @@ def main() -> None:
         model_provider = st.selectbox("Model Provider", options=list(current_options.keys()))
         model_id = st.selectbox("Model ID *", options=current_options.get(model_provider, []))
 
-        url = st.secrets.get("url", "") or st.text_input("Endpoint URL *")
+     
+        
+        instance_id = st.text_input("instance_id (not required)")  or st.secrets.get("instance_id", "")
+        username = st.text_input("username (not required)")  or st.secrets.get("username", "")
 
         # Additional input fields for vision models
         uploaded_image = None  # type: Optional[Any]
